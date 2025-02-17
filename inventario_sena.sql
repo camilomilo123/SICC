@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 17-02-2025 a las 15:39:31
+-- Tiempo de generación: 17-02-2025 a las 16:52:08
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -60,11 +60,7 @@ CREATE TABLE `entradas` (
 --
 
 INSERT INTO `entradas` (`id`, `inventario_id`, `nombre`, `fecha`, `unidad_medida`, `cantidad_anterior`, `cantidad_ingresada`) VALUES
-(47, 1, 'Ácido Acético >99.8%', '2025-01-29', 'ml', 0, 2),
-(56, 2, 'acetaminofen ', '2025-02-03', 'kg', 0, 200),
-(58, 2, 'acetaminofen ', '2025-02-03', 'ml', 200, 200),
-(59, 2, 'dolex', '2025-02-04', 'ml', 600, 200),
-(63, 2, 'dolex', '2025-02-07', 'ml', 800, 500);
+(1, 1, 'acido', '2025-02-17', 'ml', 2, 200);
 
 -- --------------------------------------------------------
 
@@ -121,7 +117,7 @@ CREATE TABLE `inventario_laboratorio` (
 --
 
 INSERT INTO `inventario_laboratorio` (`id`, `reactivo`, `formula`, `estado`, `fecha_vencimiento`, `lote`, `unidad_medida`, `ubicacion`, `codigo_almacenamiento`, `cantidad`) VALUES
-(1, 'acido', 'ssas', 'sss', '2025-02-08', 'www', 'cm', 'sasaima', 'sdd', 2),
+(1, 'acido', 'ssas', 'sss', '2025-02-08', 'www', 'cm', 'sasaima', 'sdd', 202),
 (2, 'dolex', 'ss', 'ss', '2025-02-14', 'sws', 'swsw', 'sss', 'sws', 1300),
 (3, 'speed', 'chontadurio', 'guarana', '2025-02-05', 'xxx', 'mililitros', 'chena', 'frio', 0);
 
@@ -222,17 +218,17 @@ INSERT INTO `movimientos` (`id`, `producto_id`, `tipo_movimiento`, `cantidad`, `
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `salida`
+-- Estructura de tabla para la tabla `salidas_laboratorio`
 --
 
-CREATE TABLE `salida` (
+CREATE TABLE `salidas_laboratorio` (
   `id` int(11) NOT NULL,
-  `producto_id` int(11) NOT NULL,
-  `descripcion` text NOT NULL,
-  `consecutivo` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `unidad_medida` text NOT NULL,
-  `fecha` date NOT NULL
+  `reactivo_id` int(11) NOT NULL,
+  `fecha` datetime DEFAULT current_timestamp(),
+  `descripcion` text DEFAULT NULL,
+  `cantidad_anterior` int(11) NOT NULL,
+  `cantidad_salida` int(11) NOT NULL,
+  `cantidad_total` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -323,11 +319,11 @@ ALTER TABLE `movimientos`
   ADD KEY `producto_id` (`producto_id`);
 
 --
--- Indices de la tabla `salida`
+-- Indices de la tabla `salidas_laboratorio`
 --
-ALTER TABLE `salida`
+ALTER TABLE `salidas_laboratorio`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `producto_id` (`producto_id`);
+  ADD KEY `reactivo_id` (`reactivo_id`);
 
 --
 -- Indices de la tabla `usuario`
@@ -350,7 +346,7 @@ ALTER TABLE `almacen`
 -- AUTO_INCREMENT de la tabla `entradas`
 --
 ALTER TABLE `entradas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso`
@@ -395,10 +391,10 @@ ALTER TABLE `movimientos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
--- AUTO_INCREMENT de la tabla `salida`
+-- AUTO_INCREMENT de la tabla `salidas_laboratorio`
 --
-ALTER TABLE `salida`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+ALTER TABLE `salidas_laboratorio`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
@@ -423,10 +419,10 @@ ALTER TABLE `movimientos`
   ADD CONSTRAINT `movimientos_ibfk_1` FOREIGN KEY (`producto_id`) REFERENCES `inven_laboratorio` (`item`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `salida`
+-- Filtros para la tabla `salidas_laboratorio`
 --
-ALTER TABLE `salida`
-  ADD CONSTRAINT `salida_ibfk_1` FOREIGN KEY (`producto_id`) REFERENCES `inven_laboratorio` (`item`) ON DELETE CASCADE;
+ALTER TABLE `salidas_laboratorio`
+  ADD CONSTRAINT `salidas_laboratorio_ibfk_1` FOREIGN KEY (`reactivo_id`) REFERENCES `inventario_laboratorio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
